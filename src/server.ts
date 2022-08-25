@@ -33,7 +33,8 @@ const isImageURL = require('image-url-validator').default;
 
   app.get("/filteredimage", async (req: Request, res: Response) => {
     const image_url: string = req.query.image_url as string
-
+    
+    // check if the given query parameter is a real image url
     const is_image: boolean = await isImageURL(image_url)
     if (!is_image) {
       return res.status(400).json(
@@ -47,6 +48,7 @@ const isImageURL = require('image-url-validator').default;
           if (err) res.status(500).json(
             { message: "Unexpected server error!" }
           )
+          // delete temporary file after use
           await deleteLocalFiles([filtered_image_path])
         })
       })
@@ -58,8 +60,9 @@ const isImageURL = require('image-url-validator').default;
   //! END @TODO1
 
   // Root Endpoint
-  // Displays a simple message to the user
+  // Displays an HTML form to submit image url for better experience
   app.get("/", async (req: Request, res: Response) => {
+    // send an html file with a form
     res.sendFile(process.cwd() + "/image_url.html");
     // res.send("try GET /filteredimage?image_url={{}}")
   });
