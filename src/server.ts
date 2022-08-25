@@ -60,7 +60,8 @@ const isImageURL = require('image-url-validator').default;
   // Root Endpoint
   // Displays a simple message to the user
   app.get("/", async (req: Request, res: Response) => {
-    res.send("try GET /filteredimage?image_url={{}}")
+    res.sendFile(process.cwd() + "/image_url.html");
+    // res.send("try GET /filteredimage?image_url={{}}")
   });
 
 

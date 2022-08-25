@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMAGE URL</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        form {
+            width: 300px;
+            box-shadow: 4px 3px 3px rgba(0, 0, 0, 0.237);
+            background-color: wheat;
+            padding: 1rem;
+        }
+        form textarea {
+            padding: .5rem 1rem;
+            width: 100%;
+            border-radius: .25rem;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+        }
+        .btn {
+            padding: 1rem;
+            margin-top: 0.25rem;
+            background-color: dodgerblue;
+            color: white;
+            font-size: large;
+            border: 1px solid white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <form action="/filteredimage" method="get">
+        <label for="url">IMAGE URL:</label>
+        <textarea name="image_url" id="url"></textarea>
+        <button class="btn" type="submit">Filter Image <span style="display: inline-block;font-size: x-large;">&rarr;</span></button>
+        <p style="text-align: center;">
+            <img src="https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="Google Cat Image" width="100" height="100"/>
+            
+            <p style="text-align: center;">
+                <a href="/filteredimage?image_url=https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" class="link">Test this one!</a>
+            </p>
+            </p>
+        </form>
+</body>
+</html>
