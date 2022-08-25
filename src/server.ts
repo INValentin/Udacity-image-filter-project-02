@@ -20,7 +20,6 @@ const isImageURL = require('image-url-validator').default;
   // GET /filteredimage?image_url={{URL}}
   // endpoint to filter an image from a public url.
   // IT SHOULD
-  //    1
   //    1. validate the image_url query
   //    2. call filterImageFromURL(image_url) to filter the image
   //    3. send the resulting file in the response
@@ -35,16 +34,10 @@ const isImageURL = require('image-url-validator').default;
   app.get("/filteredimage", async (req: Request, res: Response) => {
     const image_url: string = req.query.image_url as string
 
-    // if (!image_url) {
-    //   return res.status(400).json(
-    //     { "message": "Please provide a valid image url!" }
-    //   )
-    // }
-
     const is_image: boolean = await isImageURL(image_url)
     if (!is_image) {
       return res.status(400).json(
-        { "message": "Please provide a valid image url!" }
+        { message: "Please provide a valid image url!" }
       )
     }
 
@@ -52,13 +45,13 @@ const isImageURL = require('image-url-validator').default;
       .then(filtered_image_path => {
         res.sendFile(filtered_image_path, async (err) => {
           if (err) res.status(500).json(
-            { message: "Error occured while sending filtered image!" }
+            { message: "Unexpected server error!" }
           )
           await deleteLocalFiles([filtered_image_path])
         })
       })
       .catch(err => {
-        res.status(500).json({ message: err })
+        res.status(422).json({ message: err })
       })
   })
 
@@ -77,3 +70,5 @@ const isImageURL = require('image-url-validator').default;
     console.log(`press CTRL+C to stop server`);
   });
 })();
+
+
