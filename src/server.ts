@@ -2,6 +2,9 @@ import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import { filterImageFromURL, deleteLocalFiles } from './util/util';
 
+// Image url validator package
+const isImageURL = require('image-url-validator').default;
+
 (async () => {
 
   // Init the Express application
@@ -32,23 +35,31 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util';
   app.get("/filteredimage", async (req: Request, res: Response) => {
     const image_url: string = req.query.image_url as string
 
-    if (!image_url) {
+    // if (!image_url) {
+    //   return res.status(400).json(
+    //     { "message": "Please provide a valid image url!" }
+    //   )
+    // }
+
+    const is_image: boolean = await isImageURL(image_url)
+    if (!is_image) {
       return res.status(400).json(
-        { "message": "Please provide image url!" }
+        { "message": "Please provide a valid image url!" }
       )
     }
+
     filterImageFromURL(image_url)
-    .then(filtered_image_path => {
-      res.sendFile(filtered_image_path, async (err) => {
-        if (err) res.status(500).json(
-          {message: "Error occured while sending filtered image!"}
-        )
-        await deleteLocalFiles([filtered_image_path])
+      .then(filtered_image_path => {
+        res.sendFile(filtered_image_path, async (err) => {
+          if (err) res.status(500).json(
+            { message: "Error occured while sending filtered image!" }
+          )
+          await deleteLocalFiles([filtered_image_path])
+        })
       })
-    })
-    .catch(err => {
-      res.status(500).json({message: err})
-    })
+      .catch(err => {
+        res.status(500).json({ message: err })
+      })
   })
 
   //! END @TODO1
