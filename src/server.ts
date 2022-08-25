@@ -1,6 +1,6 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
-import {filterImageFromURL, deleteLocalFiles} from './util/util';
+import { filterImageFromURL, deleteLocalFiles } from './util/util';
 
 (async () => {
 
@@ -9,7 +9,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   // Set the network port
   const port = process.env.PORT || 8082;
-  
+
   // Use the body parser middleware for post requests
   app.use(bodyParser.json());
 
@@ -29,18 +29,40 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   /**************************************************************************** */
 
+  app.get("/filteredimage", async (req: Request, res: Response) => {
+    const image_url: string = req.query.image_url as string
+
+    if (!image_url) {
+      return res.status(400).json(
+        { "message": "Please provide image url!" }
+      )
+    }
+    filterImageFromURL(image_url)
+    .then(filtered_image_path => {
+      res.sendFile(filtered_image_path, async (err) => {
+        if (err) res.status(500).json(
+          {message: "Error occured while sending filtered image!"}
+        )
+        await deleteLocalFiles([filtered_image_path])
+      })
+    })
+    .catch(err => {
+      res.status(500).json({message: err})
+    })
+  })
+
   //! END @TODO1
-  
+
   // Root Endpoint
   // Displays a simple message to the user
-  app.get( "/", async ( req, res ) => {
+  app.get("/", async (req: Request, res: Response) => {
     res.send("try GET /filteredimage?image_url={{}}")
-  } );
-  
+  });
+
 
   // Start the Server
-  app.listen( port, () => {
-      console.log( `server running http://localhost:${ port }` );
-      console.log( `press CTRL+C to stop server` );
-  } );
+  app.listen(port, () => {
+    console.log(`server running http://localhost:${port}`);
+    console.log(`press CTRL+C to stop server`);
+  });
 })();
